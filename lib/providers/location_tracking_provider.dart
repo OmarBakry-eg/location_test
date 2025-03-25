@@ -12,7 +12,6 @@ class LocationTrackingProvider with ChangeNotifier, WidgetsBindingObserver {
 
   factory LocationTrackingProvider() => _singleton;
 
-
   final ValueNotifier<bool> isTracking = ValueNotifier<bool>(false);
 
   final LocationProvider _locationProvider = LocationProvider();
@@ -101,14 +100,20 @@ class LocationTrackingProvider with ChangeNotifier, WidgetsBindingObserver {
     if (!isTracking.value) return;
 
     try {
+      // Cancel the location updates subscription first
       await _locationProvider.setBackgroundMode(false);
-      isTracking.value = false;
-      _locationBox?.put('isTracking', false);
-
+      // Persist the current summary before stopping
       summaryProvider.persistDailySummary(
         _travelingTimeToday,
         geoFenceProvider.getAllGeoFencesTimeSpent(),
       );
+
+      // Reset the traveling time to the persisted value to avoid accumulation
+      _travelingTimeToday = summaryProvider.getTravelingTimeToday();
+      _lastLocationUpdate = null;
+
+      isTracking.value = false;
+      _locationBox?.put('isTracking', false);
       notifyListeners();
     } catch (e) {
       NotificationsHelper()

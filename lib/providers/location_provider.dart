@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:background_location/background_location.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
@@ -115,10 +117,13 @@ class LocationProvider with ChangeNotifier {
   Future<void> setBackgroundMode(bool enable) async {
     try {
       _isBackgroundModeEnabled = enable;
-      if(enable) {
+      if (enable) {
         BackgroundLocation.startLocationService();
       } else {
         BackgroundLocation.stopLocationService();
+        // Cancel the position stream subscription
+        _positionStreamSubscription?.cancel();
+        _positionStreamSubscription = null;
       }
       notifyListeners();
     } catch (e) {
@@ -131,8 +136,14 @@ class LocationProvider with ChangeNotifier {
     // update my location on the server
   }
 
+  // Store the subscription to be able to cancel it later
+  StreamSubscription<Position>? _positionStreamSubscription;
+
   void onLocationChanged(Function(Position) callback) {
-    Geolocator.getPositionStream(
+    // Cancel any existing subscription first
+    _positionStreamSubscription?.cancel();
+
+    _positionStreamSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.low,
         distanceFilter: 10,
