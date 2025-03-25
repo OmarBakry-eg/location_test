@@ -26,6 +26,8 @@ class LocationTrackingProvider with ChangeNotifier, WidgetsBindingObserver {
 
   int _travelingTimeToday = 0;
 
+  int get getTravelingTimeToday => _travelingTimeToday;
+
   LocationTrackingProvider._internal() {
     WidgetsBinding.instance.addObserver(this);
   }
@@ -55,7 +57,7 @@ class LocationTrackingProvider with ChangeNotifier, WidgetsBindingObserver {
 
     _locationBox = await Hive.openBox('locationTracking');
 
-    _travelingTimeToday = summaryProvider.getTravelingTimeToday();
+    _travelingTimeToday = summaryProvider.getTravelingTimeToday;
 
     final wasTracking = _locationBox!.get('isTracking') ?? false;
     if (wasTracking) {
@@ -109,7 +111,7 @@ class LocationTrackingProvider with ChangeNotifier, WidgetsBindingObserver {
       );
 
       // Reset the traveling time to the persisted value to avoid accumulation
-      _travelingTimeToday = summaryProvider.getTravelingTimeToday();
+      _travelingTimeToday = summaryProvider.getTravelingTimeToday;
       _lastLocationUpdate = null;
 
       isTracking.value = false;
@@ -189,7 +191,4 @@ class LocationTrackingProvider with ChangeNotifier, WidgetsBindingObserver {
     return locationMap;
   }
 
-  int getTravelingTimeToday() {
-    return _travelingTimeToday;
-  }
 }

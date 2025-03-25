@@ -13,6 +13,9 @@ class SummaryProvider with ChangeNotifier {
 
   Box<DailySummary>? _summaryBox;
 
+  int get getTravelingTimeToday =>
+      _summaryBox?.get(_currentDate)?.travelingTime ?? 0;
+      
   String get _currentDate {
     final now = DateTime.now();
     return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
@@ -31,7 +34,10 @@ class SummaryProvider with ChangeNotifier {
     _summaryBox = await Hive.openBox<DailySummary>('dailySummaries');
   }
 
-  void persistDailySummary(int travelingTime, Map<String, Duration> geoFenceTimes) {
+  void persistDailySummary(
+    int travelingTime,
+    Map<String, Duration> geoFenceTimes,
+  ) {
     if (_summaryBox == null) return;
 
     final Map<String, int> locationTimes = {};
@@ -53,7 +59,10 @@ class SummaryProvider with ChangeNotifier {
     return _summaryBox?.get(date);
   }
 
-  DailySummary getTodaySummary(int travelingTime, Map<String, Duration> geoFenceTimes) {
+  DailySummary getTodaySummary(
+    int travelingTime,
+    Map<String, Duration> geoFenceTimes,
+  ) {
     final Map<String, int> locationTimes = {};
     for (final entry in geoFenceTimes.entries) {
       locationTimes[entry.key] = entry.value.inSeconds;
@@ -69,9 +78,5 @@ class SummaryProvider with ChangeNotifier {
   List<DailySummary> getAllDailySummaries() {
     if (_summaryBox == null) return [];
     return _summaryBox!.values.toList();
-  }
-
-  int getTravelingTimeToday() {
-    return _summaryBox?.get(_currentDate)?.travelingTime ?? 0;
   }
 }

@@ -84,7 +84,7 @@ mixin GeoFenceLogicMixin on ChangeNotifier {
     return result;
   }
 
-  // These need to be implemented by the class using this mixin
+  //* These need to be implemented by the class using this mixin
   Map<String, Map<String, dynamic>> get geoFences;
   Map<String, Map<dynamic, dynamic>> get customGeoFences;
   Future<bool> persistGeoFenceData();

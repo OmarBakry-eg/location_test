@@ -17,7 +17,7 @@ class TimeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin:
-          const EdgeInsets.only(bottom: 8), // Assuming 'bottom' was intended
+          const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: Icon(icon, color: color),
         title: Text(title),

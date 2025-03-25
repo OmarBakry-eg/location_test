@@ -21,6 +21,8 @@ class LocationProvider with ChangeNotifier {
   bool _acceptedPermission = false;
   bool _isBackgroundModeEnabled = false;
 
+  StreamSubscription<Position>? _positionStreamSubscription;
+
   bool get initialized => _currentLocation != null;
   bool get hasPermission => _acceptedPermission;
   bool get isBackgroundModeEnabled => _isBackgroundModeEnabled;
@@ -135,9 +137,6 @@ class LocationProvider with ChangeNotifier {
   Future<void> updateLocationOnMap(double lat, double lng) async {
     // update my location on the server
   }
-
-  // Store the subscription to be able to cancel it later
-  StreamSubscription<Position>? _positionStreamSubscription;
 
   void onLocationChanged(Function(Position) callback) {
     // Cancel any existing subscription first
